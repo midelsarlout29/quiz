@@ -5,9 +5,11 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js",
+    "start": "prisma migrate deploy && node src/server.js",
+    "start:local": "node src/server.js",
     "migrate": "prisma migrate dev --name init",
     "generate": "prisma generate",
+    "postinstall": "prisma generate",
     "seed": "node prisma/seed.js"
   },
   "dependencies": {
@@ -23,11 +25,11 @@
     "multer": "^2.1.1",
     "pdf-parse": "^1.1.1",
     "pdfkit": "^0.15.2",
+    "prisma": "^5.22.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9",
-    "prisma": "^5.22.0"
+    "nodemon": "^3.1.9"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

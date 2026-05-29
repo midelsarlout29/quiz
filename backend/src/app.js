@@ -13,14 +13,23 @@ const attemptRoutes = require('./routes/attempt.routes');
 const reportRoutes = require('./routes/report.routes');
 
 const app = express();
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || process.env.CLIENT_URL || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Origin request tidak diizinkan'));
+  },
+  credentials: true
+}));
 app.use((req, res, next) => {
   const unsafe = !['GET', 'HEAD', 'OPTIONS'].includes(req.method);
   const origin = req.headers.origin;
-  const allowedOrigin = process.env.CLIENT_URL || 'http://localhost:5173';
-  if (unsafe && origin && origin !== allowedOrigin) {
+  if (unsafe && origin && !allowedOrigins.includes(origin)) {
     return res.status(403).json({ message: 'Origin request tidak diizinkan' });
   }
   next();

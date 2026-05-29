@@ -11,7 +11,7 @@ const { generateSchema, validate } = require('../utils/validators');
 const { normalizeDifficulty, normalizeQuestionType, sanitizeText } = require('../utils/sanitize');
 
 const router = express.Router();
-const uploadDir = path.join(__dirname, '../../uploads');
+const uploadDir = path.resolve(process.env.UPLOAD_DIR || path.join(__dirname, '../../uploads'));
 fs.mkdirSync(uploadDir, { recursive: true });
 
 const allowedMimes = [
