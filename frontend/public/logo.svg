@@ -1,0 +1,31 @@
+<svg width="320" height="120" viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="fav" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(20,20)">
+    <rect x="0" y="0" width="80" height="80" rx="20"
+          fill="url(#fav)"/>
+
+    <text x="24" y="55"
+          font-family="Arial"
+          font-size="40"
+          font-weight="700"
+          fill="white">
+      Q
+    </text>
+
+    <circle cx="58" cy="28" r="6" fill="white"/>
+  </g>
+
+  <text x="120" y="70"
+        font-family="Inter, Arial"
+        font-size="34"
+        font-weight="700"
+        fill="#111827">
+    Smart Quiz
+  </text>
+</svg>
