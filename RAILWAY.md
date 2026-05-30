@@ -92,6 +92,15 @@ Setelah deploy sukses, jalankan sekali dari Railway shell service aplikasi:
 npm run seed
 ```
 
+Seed akan membuat akun awal:
+
+```text
+Super Admin: superadmin@smartquiz.test / password123
+Admin: admin@smartquiz.test / password123
+Pembuat kuis: guru@smartquiz.test / password123
+Peserta: peserta@smartquiz.test / password123
+```
+
 ## 6. URL Production
 
 Gunakan URL service aplikasi:

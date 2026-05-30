@@ -34,7 +34,7 @@ const upload = multer({
 router.use(authenticate);
 
 router.get('/', asyncHandler(async (req, res) => {
-  const where = req.user.role === 'admin' ? {} : { uploaderId: req.user.id };
+  const where = ['admin', 'super_admin'].includes(req.user.role) ? {} : { uploaderId: req.user.id };
   const materials = await prisma.material.findMany({ where, include: { uploader: true }, orderBy: { createdAt: 'desc' } });
   res.json(materials);
 }));

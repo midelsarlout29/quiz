@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { UploadCloud } from 'lucide-react';
 import { api, errorMessage } from '../api/client';
+import { useToast } from '../state/ToastContext';
 
 export default function MaterialUploadPage() {
+  const { showToast } = useToast();
   const [materials, setMaterials] = useState([]);
   const [title, setTitle] = useState('');
   const [file, setFile] = useState(null);
@@ -26,9 +28,12 @@ export default function MaterialUploadPage() {
       setTitle('');
       setFile(null);
       setMessage('Materi berhasil diupload dan diekstrak.');
+      showToast('Materi berhasil diupload dan diekstrak.', 'success');
       load();
     } catch (error) {
-      setMessage(errorMessage(error));
+      const message = errorMessage(error);
+      setMessage(message);
+      showToast(message, 'error');
     }
   }
 

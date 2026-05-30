@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { errorMessage } from '../api/client';
 import { useAuth } from '../state/AuthContext';
+import { useToast } from '../state/ToastContext';
 
 export default function AuthPage({ mode }) {
   const isRegister = mode === 'register';
   const { login, register } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: '',
@@ -20,9 +22,12 @@ export default function AuthPage({ mode }) {
     setError('');
     try {
       const user = isRegister ? await register(form) : await login(form.email, form.password);
-      navigate(user.role === 'admin' ? '/admin' : user.role === 'creator' ? '/creator' : '/participant');
+      showToast(isRegister ? 'Akun berhasil dibuat.' : 'Login berhasil.', 'success');
+      navigate(user.role === 'admin' || user.role === 'super_admin' ? '/admin' : user.role === 'creator' ? '/creator' : '/participant');
     } catch (err) {
-      setError(errorMessage(err));
+      const message = errorMessage(err);
+      setError(message);
+      showToast(message, 'error');
     }
   }
 

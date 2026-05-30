@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { Save, Send } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { api } from '../api/client';
+import { useToast } from '../state/ToastContext';
 
 export default function QuestionEditorPage() {
+  const { showToast } = useToast();
   const { quizId } = useParams();
   const [quiz, setQuiz] = useState(null);
   const [active, setActive] = useState(0);
@@ -44,6 +46,7 @@ export default function QuestionEditorPage() {
       showResultDirectly: Boolean(quiz.showResultDirectly),
       isPublic: Boolean(quiz.isPublic)
     });
+    showToast('Pengaturan kuis berhasil disimpan.', 'success');
     load();
   }
 
@@ -57,11 +60,13 @@ export default function QuestionEditorPage() {
       explanation: question.explanation?.content,
       options: question.options
     });
+    showToast('Soal berhasil disimpan.', 'success');
     load();
   }
 
   async function publish() {
     await api.post(`/quizzes/${quizId}/publish`);
+    showToast('Kuis berhasil dipublish.', 'success');
     load();
   }
 

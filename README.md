@@ -45,6 +45,7 @@ Aplikasi web kuis/tryout end-to-end untuk admin, pembuat kuis, dan peserta.
 
 ## Akun Seed
 
+- Super Admin: `superadmin@smartquiz.test` / `password123`
 - Admin: `admin@smartquiz.test` / `password123`
 - Pembuat kuis: `guru@smartquiz.test` / `password123`
 - Peserta: `peserta@smartquiz.test` / `password123`

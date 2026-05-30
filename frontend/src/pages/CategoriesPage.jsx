@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/client';
+import { useToast } from '../state/ToastContext';
 
 export default function CategoriesPage() {
+  const { showToast } = useToast();
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState('');
 
@@ -17,6 +19,7 @@ export default function CategoriesPage() {
     if (!name.trim()) return;
     await api.post('/categories', { name });
     setName('');
+    showToast('Kategori berhasil ditambahkan.', 'success');
     load();
   }
 

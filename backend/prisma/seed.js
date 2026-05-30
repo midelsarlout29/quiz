@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   const roles = [
+    { name: 'super_admin', label: 'Super Admin' },
     { name: 'admin', label: 'Admin' },
     { name: 'creator', label: 'Pembuat Kuis / Guru / Dosen' },
     { name: 'participant', label: 'Peserta' }
@@ -23,6 +24,7 @@ async function main() {
   const passwordHash = await bcrypt.hash('password123', 10);
 
   const users = [
+    { name: 'Super Admin Smart Quiz', email: 'superadmin@smartquiz.test', roleId: roleId.super_admin },
     { name: 'Admin Smart Quiz', email: 'admin@smartquiz.test', roleId: roleId.admin },
     { name: 'Guru Demo', email: 'guru@smartquiz.test', roleId: roleId.creator, institution: 'Sekolah Demo' },
     { name: 'Peserta Demo', email: 'peserta@smartquiz.test', roleId: roleId.participant, institution: 'Umum' }

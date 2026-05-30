@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Flag, Send } from 'lucide-react';
 import { api } from '../api/client';
+import { useToast } from '../state/ToastContext';
 
 export default function TryoutPage() {
+  const { showToast } = useToast();
   const { quizId, attemptId } = useParams();
   const navigate = useNavigate();
   const [quiz, setQuiz] = useState(null);
@@ -89,6 +91,7 @@ export default function TryoutPage() {
     } catch (error) {
       addPending(questionId, payload);
       setSaveState('pending');
+      showToast('Koneksi bermasalah. Jawaban disimpan lokal dan akan disinkronkan otomatis.', 'error');
     }
   }
 
@@ -104,6 +107,7 @@ export default function TryoutPage() {
         removePending(Number(questionId));
       }
       setSaveState('saved');
+      showToast('Jawaban tersinkron ke server.', 'success');
     } catch (error) {
       setSaveState('pending');
     } finally {
@@ -126,6 +130,7 @@ export default function TryoutPage() {
     if (!auto && !window.confirm('Selesaikan kuis sekarang?')) return;
     await flushPending(answers);
     await api.post(`/attempts/${attemptId}/submit`);
+    showToast('Kuis berhasil disubmit.', 'success');
     localStorage.removeItem(storageKey);
     localStorage.removeItem(pendingKey);
     navigate(`/result/${attemptId}`);

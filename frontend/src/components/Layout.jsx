@@ -3,6 +3,12 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../state/AuthContext';
 
 const navByRole = {
+  super_admin: [
+    ['Dashboard', '/admin', Shield],
+    ['Pengguna', '/admin/users', Users],
+    ['Kategori', '/admin/categories', BookOpen],
+    ['Laporan', '/reports', FileText]
+  ],
   admin: [
     ['Dashboard', '/admin', Shield],
     ['Pengguna', '/admin/users', Users],

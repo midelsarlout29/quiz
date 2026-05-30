@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Wand2 } from 'lucide-react';
 import { api, errorMessage } from '../api/client';
+import { useToast } from '../state/ToastContext';
 
 export default function GeneratePage() {
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const [materials, setMaterials] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -43,9 +45,12 @@ export default function GeneratePage() {
         categoryId: Number(form.categoryId),
         questionCount: Number(form.questionCount)
       });
+      showToast('Soal berhasil digenerate. Silakan review sebelum publish.', 'success');
       navigate(`/creator/questions/${response.data.quiz.id}`);
     } catch (err) {
-      setError(errorMessage(err));
+      const message = errorMessage(err);
+      setError(message);
+      showToast(message, 'error');
     } finally {
       setBusy(false);
     }
