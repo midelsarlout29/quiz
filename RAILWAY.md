@@ -18,7 +18,24 @@ Railway akan menyediakan variable `DATABASE_URL`.
 
 Buat service dari GitHub repo ini.
 
-Pengaturan service:
+Pengaturan service yang disarankan:
+
+```text
+Root Directory: kosongkan / repo root
+Build Command: npm run build
+Start Command: npm start
+Healthcheck Path: /api/health
+```
+
+Repo ini juga menyediakan `nixpacks.toml`, jadi Railway dari root repo akan otomatis:
+
+1. Install dependency backend.
+2. Install dependency frontend.
+3. Build React.
+4. Menyalin hasil build ke `backend/public`.
+5. Menjalankan backend Express yang menyajikan frontend di `/` dan API di `/api`.
+
+Jika tetap ingin memakai root directory `backend`, gunakan:
 
 ```text
 Root Directory: backend
@@ -26,13 +43,6 @@ Build Command: npm run build
 Start Command: npm start
 Healthcheck Path: /api/health
 ```
-
-Build backend akan otomatis:
-
-1. Install dependency frontend.
-2. Build React.
-3. Menyalin hasil build ke `backend/public`.
-4. Express menyajikan frontend dari domain yang sama.
 
 Start backend akan otomatis:
 
@@ -110,6 +120,16 @@ Berarti frontend belum ikut ter-build/tersalin. Pastikan:
 - Build Command adalah `npm run build`.
 - Log build menampilkan `Frontend build copied to .../backend/public`.
 - Variable `VITE_API_URL=/api` sudah ada.
+
+Jika login mengirim request ke `/api/auth/login` tetapi statusnya `404` dan response `Content-Type` adalah `text/html`, berarti Railway sedang menjalankan service frontend/static saja, bukan backend API. Perbaiki service menjadi:
+
+```text
+Root Directory: kosongkan / repo root
+Build Command: npm run build
+Start Command: npm start
+```
+
+atau deploy ulang service dengan `Root Directory: backend`.
 
 Jika healthcheck gagal karena Prisma:
 
