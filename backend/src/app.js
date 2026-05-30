@@ -20,7 +20,25 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || process.env.CLIENT_URL ||
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      baseUri: ["'self'"],
+      connectSrc: ["'self'", 'https:'],
+      fontSrc: ["'self'", 'https:', 'data:'],
+      formAction: ["'self'"],
+      frameAncestors: ["'self'"],
+      imgSrc: ["'self'", 'data:', 'blob:'],
+      objectSrc: ["'none'"],
+      scriptSrc: ["'self'", "'unsafe-eval'"],
+      scriptSrcAttr: ["'none'"],
+      styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
+      workerSrc: ["'self'", 'blob:'],
+      upgradeInsecureRequests: []
+    }
+  }
+}));
 app.use(cors({
   origin(origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
