@@ -1,77 +1,117 @@
 # Deploy Smart Quiz Generator ke Railway
 
-Deploy sebagai 3 service dalam 1 project Railway:
+Konfigurasi terbaru mendukung deploy sebagai **1 service aplikasi** plus **1 service PostgreSQL**.
 
-1. PostgreSQL
-2. Backend API
-3. Frontend Web
+Domain service aplikasi akan menampilkan frontend React di `/` dan backend API tetap tersedia di `/api`.
 
 ## 1. PostgreSQL
 
-Tambahkan plugin PostgreSQL di Railway. Railway akan menyediakan `DATABASE_URL`.
+Tambahkan database PostgreSQL di Railway:
 
-## 2. Backend API
+```text
+New -> Database -> Add PostgreSQL
+```
 
-Buat service baru dari GitHub repo ini, lalu set:
+Railway akan menyediakan variable `DATABASE_URL`.
 
-- Root Directory: `backend`
-- Build: Nixpacks
-- Start Command: `npm start`
-- Healthcheck Path: `/api/health`
+## 2. Service Aplikasi
 
-Environment variables:
+Buat service dari GitHub repo ini.
+
+Pengaturan service:
+
+```text
+Root Directory: backend
+Build Command: npm run build
+Start Command: npm start
+Healthcheck Path: /api/health
+```
+
+Build backend akan otomatis:
+
+1. Install dependency frontend.
+2. Build React.
+3. Menyalin hasil build ke `backend/public`.
+4. Express menyajikan frontend dari domain yang sama.
+
+Start backend akan otomatis:
+
+1. Menjalankan `prisma migrate deploy`.
+2. Menjalankan API Express.
+
+## 3. Variables Backend
+
+Isi variable di service aplikasi:
 
 ```env
 DATABASE_URL=${{Postgres.DATABASE_URL}}
-JWT_SECRET=isi-dengan-random-secret-panjang
+JWT_SECRET=isi-dengan-random-secret-panjang-minimal-32-karakter
 JWT_EXPIRES_IN=7d
-CLIENT_URL=https://frontend-domain-railway.up.railway.app
-ALLOWED_ORIGINS=https://frontend-domain-railway.up.railway.app
+CLIENT_URL=https://domain-service-app.up.railway.app
+ALLOWED_ORIGINS=https://domain-service-app.up.railway.app
 MAX_UPLOAD_MB=10
 UPLOAD_DIR=/data/uploads
+VITE_API_URL=/api
 ```
 
-Jika memakai Railway Volume untuk upload, mount volume ke:
+Jika nama database service bukan `Postgres`, sesuaikan referensinya. Contoh:
+
+```env
+DATABASE_URL=${{postgresql.DATABASE_URL}}
+```
+
+## 4. Volume Upload
+
+Upload file perlu persistent storage. Tambahkan Railway Volume dan mount ke:
 
 ```text
 /data
 ```
 
-Backend menjalankan `prisma migrate deploy` otomatis saat start.
+Lalu gunakan:
 
-Untuk seed data production, jalankan sekali dari Railway shell:
+```env
+UPLOAD_DIR=/data/uploads
+```
+
+## 5. Seed Data
+
+Setelah deploy sukses, jalankan sekali dari Railway shell service aplikasi:
 
 ```bash
 npm run seed
 ```
 
-## 3. Frontend Web
+## 6. URL Production
 
-Buat service baru dari GitHub repo yang sama, lalu set:
+Gunakan URL service aplikasi:
 
-- Root Directory: `frontend`
-- Build: Nixpacks
-- Build Command: `npm run build`
-- Start Command: `npm start`
-- Healthcheck Path: `/health`
-
-Environment variables:
-
-```env
-VITE_API_URL=https://backend-domain-railway.up.railway.app/api
+```text
+https://domain-service-app.up.railway.app
 ```
 
-Setelah backend dan frontend punya domain Railway, update:
+Endpoint API:
 
-- Backend `CLIENT_URL`
-- Backend `ALLOWED_ORIGINS`
-- Frontend `VITE_API_URL`
+```text
+https://domain-service-app.up.railway.app/api/health
+```
 
-Redeploy kedua service setelah env final disimpan.
+## Troubleshooting
 
-## Catatan Produksi
+Jika root domain menampilkan:
 
-- Jangan commit `.env`; gunakan Railway Variables.
-- Upload file di Railway filesystem biasa bersifat sementara. Gunakan Railway Volume untuk `UPLOAD_DIR=/data/uploads`.
-- Jika pakai custom domain, tambahkan domain tersebut ke `ALLOWED_ORIGINS`.
-- `JWT_SECRET` wajib diganti dari contoh lokal.
+```json
+{"message":"Endpoint tidak ditemukan"}
+```
+
+Berarti frontend belum ikut ter-build/tersalin. Pastikan:
+
+- Root Directory service adalah `backend`.
+- Build Command adalah `npm run build`.
+- Log build menampilkan `Frontend build copied to .../backend/public`.
+- Variable `VITE_API_URL=/api` sudah ada.
+
+Jika healthcheck gagal karena Prisma:
+
+- Pastikan PostgreSQL service sudah dibuat.
+- Pastikan `DATABASE_URL` mengarah ke `${{Postgres.DATABASE_URL}}`.

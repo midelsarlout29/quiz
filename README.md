@@ -64,9 +64,7 @@ Aplikasi web kuis/tryout end-to-end untuk admin, pembuat kuis, dan peserta.
 
 ## Deploy Railway
 
-Panduan production Railway ada di [RAILWAY.md](./RAILWAY.md). Aplikasi disiapkan sebagai service backend, service frontend, dan PostgreSQL Railway.
-
-Backend memakai `npm start` untuk menjalankan `prisma migrate deploy` lalu API. Frontend memakai `npm start` untuk menyajikan hasil build React dari `$PORT` Railway.
+Panduan production Railway ada di [RAILWAY.md](./RAILWAY.md). Aplikasi disiapkan sebagai 1 service aplikasi plus PostgreSQL Railway. Frontend React disajikan oleh backend Express pada domain yang sama, dan API tetap tersedia di `/api`.
 
 Base URL: `http://localhost:4000/api`
 

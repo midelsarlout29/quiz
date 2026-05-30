@@ -1,6 +1,8 @@
 const cors = require('cors');
 const express = require('express');
+const fs = require('fs');
 const helmet = require('helmet');
+const path = require('path');
 const rateLimit = require('express-rate-limit');
 
 const authRoutes = require('./routes/auth.routes');
@@ -57,6 +59,25 @@ app.use('/api/quizzes', quizRoutes);
 app.use('/api/questions', questionRoutes);
 app.use('/api/attempts', attemptRoutes);
 app.use('/api/reports', reportRoutes);
+
+const frontendDistPath = path.resolve(process.env.FRONTEND_DIST_DIR || path.join(__dirname, '../public'));
+const frontendIndexPath = path.join(frontendDistPath, 'index.html');
+
+if (fs.existsSync(frontendIndexPath)) {
+  app.use(express.static(frontendDistPath, {
+    maxAge: '1d',
+    setHeaders(res, filePath) {
+      if (filePath.endsWith('index.html')) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    }
+  }));
+
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/')) return next();
+    return res.sendFile(frontendIndexPath);
+  });
+}
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Endpoint tidak ditemukan' });
