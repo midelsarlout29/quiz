@@ -52,9 +52,12 @@ export default function QuizListPage() {
       <div className="quiz-grid">
         {canManage && (
           <Link className="quiz-card add-quiz-card" to="/creator/generate">
-            <PlusCircle className="add-quiz-icon" size={56} />
-            <strong>Tambah Kuis</strong>
+            <span className="add-quiz-mark">
+              <PlusCircle size={76} />
+            </span>
+            <strong>Buat Kuis Baru</strong>
             <p>Generate soal otomatis dari materi.</p>
+            <span className="add-quiz-cta">Mulai generate</span>
           </Link>
         )}
         {quizzes.map((quiz) => (
