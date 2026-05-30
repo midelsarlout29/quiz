@@ -44,7 +44,8 @@ export default function QuestionEditorPage() {
       durationMinutes: Number(quiz.durationMinutes),
       passingGrade: Number(quiz.passingGrade),
       showResultDirectly: Boolean(quiz.showResultDirectly),
-      isPublic: Boolean(quiz.isPublic)
+      isPublic: Boolean(quiz.isPublic),
+      accessCode: quiz.accessCode || undefined
     });
     showToast('Pengaturan kuis berhasil disimpan.', 'success');
     load();
@@ -65,8 +66,8 @@ export default function QuestionEditorPage() {
   }
 
   async function publish() {
-    await api.post(`/quizzes/${quizId}/publish`);
-    showToast('Kuis berhasil dipublish.', 'success');
+    const response = await api.post(`/quizzes/${quizId}/publish`);
+    showToast(`Kuis berhasil dipublish. Kode: ${response.data.accessCode}`, 'success');
     load();
   }
 
@@ -92,6 +93,9 @@ export default function QuestionEditorPage() {
           </label>
           <label>Deskripsi
             <input value={quiz.description || ''} onChange={(e) => updateQuizSettings({ description: e.target.value })} />
+          </label>
+          <label>Kode kuis
+            <input value={quiz.accessCode || ''} onChange={(e) => updateQuizSettings({ accessCode: e.target.value.toUpperCase() })} placeholder="Otomatis dibuat saat publish" />
           </label>
         </div>
         <div className="toggle-row">

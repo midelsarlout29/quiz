@@ -62,7 +62,7 @@ async function main() {
 
   const material = await prisma.material.upsert({
     where: { id: 1 },
-    update: {},
+    update: { accessCode: 'QUIZ-1' },
     create: {
       title: 'Contoh Materi Literasi Digital',
       originalName: 'contoh-materi.txt',
@@ -88,6 +88,7 @@ async function main() {
       durationMinutes: 30,
       passingGrade: 70,
       showResultDirectly: true,
+      accessCode: 'QUIZ-1',
       status: 'PUBLISHED'
     }
   });

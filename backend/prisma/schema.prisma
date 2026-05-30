@@ -95,6 +95,7 @@ model Quiz {
   passingGrade       Int           @default(70)
   showResultDirectly Boolean       @default(true)
   isPublic           Boolean       @default(true)
+  accessCode         String?       @unique
   status             QuizStatus    @default(DRAFT)
   questions          Question[]
   attempts           QuizAttempt[]

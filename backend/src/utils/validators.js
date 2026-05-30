@@ -6,6 +6,13 @@ const optionalTrimmedString = z.preprocess((value) => {
   return trimmed.length ? trimmed : undefined;
 }, z.string().min(3).optional());
 
+const optionalAccessCode = z.preprocess((value) => {
+  if (value === null || value === undefined) return undefined;
+  if (typeof value !== 'string') return value;
+  const trimmed = value.trim().toUpperCase();
+  return trimmed.length ? trimmed : undefined;
+}, z.string().min(4).max(24).regex(/^[A-Z0-9-]+$/, 'Kode kuis hanya boleh berisi huruf, angka, dan tanda hubung').optional());
+
 const registerSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
@@ -28,7 +35,12 @@ const quizSchema = z.object({
   durationMinutes: z.coerce.number().int().min(1).default(90),
   passingGrade: z.coerce.number().int().min(0).max(100).default(70),
   showResultDirectly: z.boolean().default(true),
-  isPublic: z.boolean().default(true)
+  isPublic: z.boolean().default(true),
+  accessCode: optionalAccessCode
+});
+
+const startQuizSchema = z.object({
+  accessCode: optionalAccessCode
 });
 
 const generateSchema = z.object({
@@ -51,4 +63,4 @@ function validate(schema, payload) {
   return parsed.data;
 }
 
-module.exports = { registerSchema, loginSchema, quizSchema, generateSchema, validate };
+module.exports = { registerSchema, loginSchema, quizSchema, generateSchema, startQuizSchema, validate };
