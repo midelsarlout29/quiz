@@ -20,6 +20,21 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || process.env.CLIENT_URL ||
   .map((origin) => origin.trim())
   .filter(Boolean);
 
+function isAllowedOrigin(origin, req) {
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+
+  try {
+    const originUrl = new URL(origin);
+    const host = req?.get?.('host');
+    if (host && originUrl.host === host) return true;
+  } catch {
+    return false;
+  }
+
+  return false;
+}
+
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -42,14 +57,16 @@ app.use(helmet({
 app.use(cors({
   origin(origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error('Origin request tidak diizinkan'));
+    // Do not turn static asset requests into 500s. Unsafe cross-origin
+    // requests are still blocked by the explicit middleware below.
+    return callback(null, false);
   },
   credentials: true
 }));
 app.use((req, res, next) => {
   const unsafe = !['GET', 'HEAD', 'OPTIONS'].includes(req.method);
   const origin = req.headers.origin;
-  if (unsafe && origin && !allowedOrigins.includes(origin)) {
+  if (unsafe && origin && !isAllowedOrigin(origin, req)) {
     return res.status(403).json({ message: 'Origin request tidak diizinkan' });
   }
   next();
