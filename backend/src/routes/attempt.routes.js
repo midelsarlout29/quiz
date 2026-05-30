@@ -7,13 +7,37 @@ const { scoreAttempt } = require('../services/scoringService');
 const router = express.Router();
 router.use(authenticate);
 
+function canReadAttempt(user, attempt) {
+  return attempt.participantId === user.id || ['admin', 'super_admin'].includes(user.role);
+}
+
+router.get('/mine/results', asyncHandler(async (req, res) => {
+  const attempts = await prisma.quizAttempt.findMany({
+    where: {
+      participantId: req.user.id,
+      status: { in: ['SUBMITTED', 'EXPIRED'] }
+    },
+    include: {
+      quiz: {
+        include: {
+          category: true
+        }
+      },
+      ranking: true
+    },
+    orderBy: { submittedAt: 'desc' }
+  });
+
+  res.json(attempts);
+}));
+
 router.get('/:id', asyncHandler(async (req, res) => {
   const attempt = await prisma.quizAttempt.findUnique({
     where: { id: Number(req.params.id) },
     include: { answers: true, quiz: true }
   });
   if (!attempt) return res.status(404).json({ message: 'Attempt tidak ditemukan' });
-  if (attempt.participantId !== req.user.id && req.user.role !== 'admin') {
+  if (!canReadAttempt(req.user, attempt)) {
     return res.status(403).json({ message: 'Tidak dapat membuka attempt milik user lain' });
   }
   res.json(attempt);
@@ -54,6 +78,9 @@ router.get('/:id/result', asyncHandler(async (req, res) => {
     include: { quiz: true, ranking: true, participant: { select: { id: true, name: true } } }
   });
   if (!attempt) return res.status(404).json({ message: 'Hasil tidak ditemukan' });
+  if (!canReadAttempt(req.user, attempt)) {
+    return res.status(403).json({ message: 'Tidak dapat membuka hasil milik user lain' });
+  }
   res.json(attempt);
 }));
 
@@ -66,6 +93,9 @@ router.get('/:id/explanations', asyncHandler(async (req, res) => {
     }
   });
   if (!attempt) return res.status(404).json({ message: 'Attempt tidak ditemukan' });
+  if (!canReadAttempt(req.user, attempt)) {
+    return res.status(403).json({ message: 'Tidak dapat membuka pembahasan milik user lain' });
+  }
 
   const questions = await prisma.question.findMany({
     where: { quizId: attempt.quizId },
