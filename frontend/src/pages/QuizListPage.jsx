@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Clock, Copy, Edit, KeyRound, Play, PlusCircle, Trash2 } from 'lucide-react';
+import { Clock, Copy, Edit, KeyRound, Play, Plus, Trash2 } from 'lucide-react';
 import { api } from '../api/client';
 import { useAuth } from '../state/AuthContext';
 import { useToast } from '../state/ToastContext';
@@ -70,7 +70,7 @@ export default function QuizListPage() {
       <div className="quiz-grid">
         {canManage && (
           <Link className="quiz-card add-quiz-card" to="/creator/generate" aria-label="Tambah kuis">
-            <PlusCircle />
+            <Plus />
           </Link>
         )}
         {quizzes.map((quiz) => (
