@@ -77,7 +77,7 @@ async function main() {
   });
 
   const quiz = await prisma.quiz.upsert({
-    where: { id: 1 },
+    where: { accessCode: 'QUIZ-1' },
     update: {},
     create: {
       title: 'Tryout Literasi Digital',
