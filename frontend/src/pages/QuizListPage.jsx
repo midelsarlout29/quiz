@@ -98,7 +98,13 @@ export default function QuizListPage() {
               <div className="actions">
                 <Link className="button secondary" to={`/creator/questions/${quiz.id}`}><Edit size={16} /> Edit soal</Link>
                 {quiz.accessCode && (
-                  <button className="code-badge" type="button" title="Salin kode kuis" onClick={() => copyAccessCode(quiz.accessCode)}>
+                  <button
+                    className="code-badge"
+                    type="button"
+                    title="Klik untuk salin kode kuis"
+                    aria-label={`Salin kode kuis ${quiz.accessCode}`}
+                    onClick={() => copyAccessCode(quiz.accessCode)}
+                  >
                     <KeyRound size={14} /> {quiz.accessCode} <Copy size={14} />
                   </button>
                 )}
