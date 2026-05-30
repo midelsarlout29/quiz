@@ -52,7 +52,7 @@ export default function QuizListPage() {
       <div className="quiz-grid">
         {canManage && (
           <Link className="quiz-card add-quiz-card" to="/creator/generate">
-            <PlusCircle size={34} />
+            <PlusCircle className="add-quiz-icon" size={56} />
             <strong>Tambah Kuis</strong>
             <p>Generate soal otomatis dari materi.</p>
           </Link>
