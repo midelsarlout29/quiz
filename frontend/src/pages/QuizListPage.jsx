@@ -69,13 +69,8 @@ export default function QuizListPage() {
       <div className="page-title"><h1>Daftar Kuis</h1><p>Kuis publik untuk peserta dan kuis milik pembuat.</p></div>
       <div className="quiz-grid">
         {canManage && (
-          <Link className="quiz-card add-quiz-card" to="/creator/generate">
-            <span className="add-quiz-mark">
-              <PlusCircle size={76} />
-            </span>
-            <strong>Buat Kuis Baru</strong>
-            <p>Generate soal otomatis dari materi.</p>
-            <span className="add-quiz-cta">Mulai generate</span>
+          <Link className="quiz-card add-quiz-card" to="/creator/generate" aria-label="Tambah kuis">
+            <PlusCircle />
           </Link>
         )}
         {quizzes.map((quiz) => (
