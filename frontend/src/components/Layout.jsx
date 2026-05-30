@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BookOpen, FileText, Home, LogOut, Menu, Shield, Trophy, Upload, Users } from 'lucide-react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../state/AuthContext';
@@ -34,9 +35,11 @@ export default function Layout() {
   const { showToast } = useToast();
   const navigate = useNavigate();
   const items = navByRole[user?.role] || [];
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   function onLogout() {
     if (!window.confirm('Apakah Anda yakin ingin keluar?')) return;
+    setSidebarOpen(false);
     logout();
     showToast('Anda berhasil keluar.', 'info');
     navigate('/');
@@ -44,23 +47,35 @@ export default function Layout() {
 
   return (
     <div className="shell">
-      <aside className="sidebar">
+      <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <Link className="brand" to="/">
           <img src="/app-icon.svg" alt="Smart Quiz" />
           <strong>Smart Quiz</strong>
         </Link>
         <nav>
           {items.map(([label, to, Icon]) => (
-            <NavLink key={to} to={to}>
+            <NavLink key={to} to={to} onClick={() => setSidebarOpen(false)}>
               <Icon size={18} />
               {label}
             </NavLink>
           ))}
         </nav>
       </aside>
+      <button
+        className={`sidebar-backdrop ${sidebarOpen ? 'open' : ''}`}
+        type="button"
+        aria-label="Tutup menu"
+        onClick={() => setSidebarOpen(false)}
+      />
       <div className="workspace">
         <header className="topbar">
-          <button className="icon-button mobile-only" aria-label="Menu">
+          <button
+            className="icon-button mobile-only"
+            type="button"
+            aria-label="Menu"
+            aria-expanded={sidebarOpen}
+            onClick={() => setSidebarOpen(true)}
+          >
             <Menu size={20} />
           </button>
           <div>
