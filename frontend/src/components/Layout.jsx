@@ -1,6 +1,7 @@
 import { BookOpen, FileText, Home, LogOut, Menu, Shield, Trophy, Upload, Users } from 'lucide-react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../state/AuthContext';
+import { useToast } from '../state/ToastContext';
 
 const navByRole = {
   super_admin: [
@@ -30,11 +31,14 @@ const navByRole = {
 
 export default function Layout() {
   const { user, logout } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const items = navByRole[user?.role] || [];
 
   function onLogout() {
+    if (!window.confirm('Apakah Anda yakin ingin keluar?')) return;
     logout();
+    showToast('Anda berhasil keluar.', 'info');
     navigate('/');
   }
 
