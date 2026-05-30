@@ -261,14 +261,16 @@ textarea { min-height: 120px; resize: vertical; }
 }
 
 @media (max-width: 980px) {
-  .hero, .shell, .tryout-layout, .editor-layout { grid-template-columns: 1fr; }
+  .hero, .tryout-layout, .editor-layout { grid-template-columns: 1fr; }
   .hero { min-height: auto; }
-  .sidebar { position: static; }
+  .shell { grid-template-columns: 230px minmax(0, 1fr); }
+  .sidebar { position: sticky; top: 0; min-height: 100vh; padding: 14px; }
+  .sidebar nav a { padding: 0 10px; }
   .stats-grid, .workflow-grid, .quiz-grid, .feature-band { grid-template-columns: repeat(2, 1fr); }
   .number-panel { position: static; }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 760px) {
   .content { padding: 18px; }
   .hero { padding: 24px 16px; gap: 24px; }
   .hero-panel { min-height: auto; padding: 14px; }
