@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Clock, Edit, KeyRound, Play, Trash2 } from 'lucide-react';
+import { Clock, Edit, KeyRound, Play, PlusCircle, Trash2 } from 'lucide-react';
 import { api } from '../api/client';
 import { useAuth } from '../state/AuthContext';
 import { useToast } from '../state/ToastContext';
@@ -50,6 +50,13 @@ export default function QuizListPage() {
     <section>
       <div className="page-title"><h1>Daftar Kuis</h1><p>Kuis publik untuk peserta dan kuis milik pembuat.</p></div>
       <div className="quiz-grid">
+        {canManage && (
+          <Link className="quiz-card add-quiz-card" to="/creator/generate">
+            <PlusCircle size={34} />
+            <strong>Tambah Kuis</strong>
+            <p>Generate soal otomatis dari materi.</p>
+          </Link>
+        )}
         {quizzes.map((quiz) => (
           <article className="quiz-card" key={quiz.id}>
             <div><span className={`status ${quiz.status.toLowerCase()}`}>{quiz.status}</span><strong>{quiz.title}</strong></div>

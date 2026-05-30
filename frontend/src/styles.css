@@ -173,6 +173,8 @@ textarea { min-height: 120px; resize: vertical; }
 .workflow-grid svg { color: var(--blue); }
 .quiz-grid { grid-template-columns: repeat(3, 1fr); }
 .quiz-card strong { display: block; font-size: 18px; margin-top: 8px; }
+.add-quiz-card { min-height: 210px; place-content: center; text-align: center; border-style: dashed; color: var(--blue); background: #f8fbff; }
+.add-quiz-card p { color: var(--muted); margin: 0; }
 .meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }
 .meta span { display: inline-flex; gap: 5px; align-items: center; }
 .code-badge { min-height: 40px; display: inline-flex; align-items: center; gap: 7px; border: 1px dashed #93c5fd; background: #eff6ff; color: #1746a2; border-radius: 8px; padding: 0 12px; font-weight: 900; }
